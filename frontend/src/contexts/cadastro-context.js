@@ -7,7 +7,7 @@ import {
   validaStatus,
 } from "../validations/validador";
 import { apiCep } from "../apis/cep";
-import { cadastra, editar } from "../apis/backend";
+import { cadastra } from "../apis/backend";
 
 export const FormularioContext = createContext();
 
@@ -19,6 +19,7 @@ export default function ProviderFormulario({
   const [values, setValues] = useState(inputInicial);
   const [erros, setErros] = useState(erroInicial);
   const [usuarioId, setUsuarioId] = useState(null);
+  const [input, setInput] = useState(null);
 
   const onchange = (e) => {
     const { name, value } = e.target;
@@ -35,24 +36,25 @@ export default function ProviderFormulario({
   };
 
   const enviaBackend = async (e) => {
-    if (!values.status) {
-      try {
-        e.preventDefault();
-        await getEndereco();
-        await cadastra(values);
-        return;
-      } catch (error) {
-        alert("O usuario ja foi cadastrado");
-      }
+    try {
+      e.preventDefault();
+      await getEndereco();
+      await cadastra(values);
+      return;
+    } catch (error) {
+      alert("O usuario ja foi cadastrado");
     }
-    await editar(usuarioId, values);
+  };
+
+  const getInput = (input) => {
+    setInput(input);
   };
 
   const onsubmit = async (e) => {
     try {
       if (possoEnviar()) {
         await enviaBackend(e);
-        values["cep"] = "";
+        input.value = "";
         setValues(inputInicial);
       }
     } catch (error) {
@@ -90,7 +92,16 @@ export default function ProviderFormulario({
 
   return (
     <FormularioContext.Provider
-      value={{ values, erros, onchange, onsubmit, validaCampos, getId }}
+      value={{
+        values,
+        erros,
+        onchange,
+        onsubmit,
+        validaCampos,
+        getId,
+        getInput,
+        usuarioId,
+      }}
     >
       {children}
     </FormularioContext.Provider>

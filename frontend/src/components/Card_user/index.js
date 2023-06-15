@@ -41,8 +41,10 @@ export default function UsuarioCard({ usuario }) {
     try {
       await deletar(usuario._id);
       alert("Usuario deletado com sucesso.");
+      setOpen(!open);
     } catch (error) {
       alert("Você não pode deletar um usuario Ativo.");
+      setOpen(!open);
     }
   }
 

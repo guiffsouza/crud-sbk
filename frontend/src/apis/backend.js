@@ -14,6 +14,7 @@ export async function cadastra(dados) {
 }
 
 export async function editar(id, dados) {
+  console.log("dados:", dados);
   return await api.put(`/usuario/atualizar/${id}`, dados);
 }
 

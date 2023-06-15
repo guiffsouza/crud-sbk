@@ -1,26 +1,36 @@
-import { Button, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { Form } from "./styled";
+import { useContext, useState } from "react";
+import { editar } from "../../apis/backend";
 import { FormularioContext } from "../../contexts/cadastro-context";
-import { useContext } from "react";
+
+const lista = [{ label: "ativo" }, { label: "inativo" }];
 
 export default function FormularioEditor() {
-  const { values, erros, onchange, onsubmit, validaCampos } =
-    useContext(FormularioContext);
+  const [selectedValues, setSelectedValues] = useState([]);
+  const { usuarioId } = useContext(FormularioContext);
+
+  const onchange = (event, values) => {
+    setSelectedValues(values);
+  };
+
+  const onsubmit = async (e) => {
+    await editar(usuarioId, { status: selectedValues.label });
+  };
 
   return (
     <Form onSubmit={onsubmit}>
-      <TextField
-        value={values.status}
+      <Autocomplete
+        disablePortal
+        options={lista}
         onChange={onchange}
-        onBlur={validaCampos}
-        helperText={erros.status.texto}
-        error={!erros.status.valido}
-        name="status"
+        value={selectedValues}
         id="status"
-        label="Status"
+        name="status"
         variant="outlined"
         margin="dense"
         required
+        renderInput={(params) => <TextField {...params} label="Status" />}
       />
       <Button type="submit" variant="contained">
         Cadastrar

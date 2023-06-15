@@ -1,11 +1,17 @@
 import { Button, TextField } from "@mui/material";
 import { Form } from "./styled";
 import { FormularioContext } from "../../contexts/cadastro-context";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 export default function Formulario() {
-  const { values, erros, onchange, onsubmit, validaCampos } =
+  const { values, erros, onchange, onsubmit, validaCampos, getInput } =
     useContext(FormularioContext);
+
+  const inputCep = document.getElementById("cep");
+
+  useEffect(() => {
+    getInput(inputCep);
+  });
 
   return (
     <Form onSubmit={onsubmit}>
